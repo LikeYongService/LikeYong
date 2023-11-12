@@ -9,37 +9,45 @@ const SignupScreen = ({ navigation }) => {
 
   const [studentId, setStudentId] = useState('');
   const [studentIdCheckError, setStudentIdCheckError] = useState('');
-  const [checkStudentID,setCheckStudentId] = useState(false);
+  const [isStudentIdValid,setIsStudentIdValid] = useState(false);
   const [emailCheckNumber, setemailCheckNumber] = useState('');
   const [emailCheckError, setEmailCheckError] = useState(''); 
+  const [isEmailNumberValid,setIsEmailNumberValid] = useState(false);
   const [nickName, setnickName] = useState('');
-  const [nickNameCheckError,setnickNameCheckError] = useState('');
+  const [nickNameCheckError,setNickNameCheckError] = useState('');
+  const [isNickNameValid,setIsNickNameValid] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError,setPasswordError] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('');
+  const [isPasswordValid,setIsPasswordValid] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [signupCheckError, setSignupCheckError] = useState('');
 
   const handleStudentId = () => {
     const studentIdPattern = /^\d{9}$/;
-
-    if (!studentIdPattern.test(studentId)) {
-      setStudentIdCheckError('유효한 학번을 입력해주세요.');
-      setIsEmailVerified(false);
-      setEmailCheckError('');
-    } else {
-      setIsEmailVerified(true);
-      setStudentIdCheckError('');
-    }
+      if (!studentIdPattern.test(studentId)) {
+        setStudentIdCheckError('유효한 학번을 입력해주세요.');
+        setIsEmailVerified(false);
+        setIsStudentIdValid(false);
+        setEmailCheckError('');
+      } else {
+        setIsStudentIdValid(true);
+        setIsEmailVerified(true);
+        setStudentIdCheckError('');
+      }
+    
   }
 
   const handleEmailCheck = () => {
     if(isEmailVerified){
       if(emailCheckNumber != 666){
         setEmailCheckError('인증번호가 일치하지 않습니다.');
+        setIsEmailNumberValid(false);
       }
       else{
         setEmailCheckError('')
+        setIsEmailNumberValid(true);
       }
     }
     else {
@@ -48,7 +56,13 @@ const SignupScreen = ({ navigation }) => {
     
   }
   const handleNickNameCheck = () => {
-    
+    if (nickName.length < 2) {
+      setNickNameCheckError('닉네임은 두 글자 이상이어야 합니다.');
+      setIsNickNameValid(false);
+    } else {
+      setNickNameCheckError('');
+      setIsNickNameValid(true);
+    }
   }
 
   const handlePasswordChange = (text) => {
@@ -56,7 +70,8 @@ const SignupScreen = ({ navigation }) => {
 
     if (!passwordPattern.test(text)) {
       setPasswordError('비밀번호는 영문, 숫자, 기호를 포함하고 8자리 이상이어야 합니다.');
-    } else {
+    }
+    else {
       setPasswordError('');
     }
 
@@ -66,15 +81,37 @@ const SignupScreen = ({ navigation }) => {
   const handlePasswordConfirmationChange = (text) => {
     if (text !== password) {
       setPasswordConfirmationError('비밀번호가 일치하지 않습니다.');
+      setIsPasswordValid(false);
     } else {
       setPasswordConfirmationError('');
+      setIsPasswordValid(true);
     }
 
     setPasswordConfirmation(text);
   };
 
   const handleSignup = () => {
-    
+      if(!isStudentIdValid){
+        setSignupCheckError('올바른 학번을 입력해주세요.');
+      }
+      else if(!isEmailNumberValid){
+        setSignupCheckError('올바른 인증번호를 입력해주세요.');
+      }
+      else if(!isNickNameValid){
+        setSignupCheckError('올바른 닉네임을 입력해주세요.');
+      }
+      else if(passwordError){
+        setSignupCheckError('올바른 비밀번호를 입력해주세요.');
+      }
+      else if(!isPasswordValid){
+        setSignupCheckError('올바른 비밀번호를 입력해주세요.');
+      }
+      else if(password !== passwordConfirmation){
+        setSignupCheckError('비밀번호가 일치하지 않습니다.');
+      } 
+      else{
+        setSignupCheckError('');
+      }
   };
 
   return (
@@ -85,7 +122,11 @@ const SignupScreen = ({ navigation }) => {
           <TextInput
             style={[styles.input, styles.rounded]}
             value={studentId}
-            onChangeText={(text) => setStudentId(text)}
+            onChangeText={(text) => {
+              setStudentId(text);
+              setIsStudentIdValid(false);
+              setIsEmailVerified(false); // 학번이 변경되면 유효성 검사를 다시 진행해야 합니다.
+            }}
           />
           <TouchableOpacity style={styles.checkContainer} onPress={handleStudentId}>
         <Text style={styles.checkBox}>인증메일 발송</Text>
@@ -101,7 +142,10 @@ const SignupScreen = ({ navigation }) => {
           <TextInput
             style={[styles.input, styles.rounded]}
             value={emailCheckNumber}
-            onChangeText={(text) => setemailCheckNumber(text)}
+            onChangeText={(text) => {
+              setemailCheckNumber(text)
+              setIsEmailNumberValid(false);
+            }}
           />
         <TouchableOpacity style={styles.checkContainer} onPress={handleEmailCheck} disabled={!isEmailVerified}>
         <Text style={styles.checkBox}>인증번호 확인</Text>
@@ -117,7 +161,10 @@ const SignupScreen = ({ navigation }) => {
           <TextInput
             style={[styles.input, styles.rounded]}
             value={nickName}
-            onChangeText={(text) => setnickName(text)}
+            onChangeText={(text) => {
+              setnickName(text);
+              setIsNickNameValid(false);
+            }}
           />
         <TouchableOpacity style={styles.checkContainer} onPress={handleNickNameCheck}>
         <Text style={styles.checkBox}>중복 확인</Text>
@@ -157,6 +204,11 @@ const SignupScreen = ({ navigation }) => {
       ) : null}
     </View>
       </View>
+      <View style={styles.signupCheck}>
+        {signupCheckError ? (
+        <Text style={styles.errorText}>{signupCheckError}</Text>
+      ) : null}
+    </View>
       <TouchableOpacity style={styles.footer} onPress={handleSignup}>
         <Text style={styles.buttonText}>회원가입</Text>
       </TouchableOpacity>
@@ -183,8 +235,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '95%',
-    alignItems: 'center', // 버튼을 가로로 중앙에 정렬
-    marginTop: 225,// 버튼을 화면 하단으로 밀어내기 위한 여백 추가
+    alignItems: 'center', // 버튼을 가로로 중앙에 정렬// 버튼을 화면 하단으로 밀어내기 위한 여백 추가
     backgroundColor: '#22a2f2', // 배경색 추가
     paddingVertical: 10, // 상하 여백 추가
     borderRadius: 10,  
@@ -276,6 +327,12 @@ const styles = StyleSheet.create({
   emptySpace: {
     width:screenWidth,
     marginTop:5,
+    height:15,
+    marginBottom:10,
+  },
+  signupCheck: {
+    width:screenWidth,
+    marginTop:200,
     height:15,
     marginBottom:10,
   }
