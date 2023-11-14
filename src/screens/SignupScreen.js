@@ -13,10 +13,10 @@ const SignupScreen = ({ navigation }) => {
   const [emailCheckNumber, setemailCheckNumber] = useState('');
   const [emailCheckError, setEmailCheckError] = useState(''); 
   const [isEmailNumberValid,setIsEmailNumberValid] = useState(false);
-  const [nickName, setnickName] = useState('');
+  const [nickname, setnickname] = useState('');
   const [nickNameCheckError,setNickNameCheckError] = useState('');
   const [isNickNameValid,setIsNickNameValid] = useState(false);
-  const [password, setPassword] = useState('');
+  const [pwd, setpwd] = useState('');
   const [passwordError,setPasswordError] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [passwordConfirmationError, setPasswordConfirmationError] = useState('');
@@ -56,7 +56,7 @@ const SignupScreen = ({ navigation }) => {
     
   }
   const handleNickNameCheck = () => {
-    if (nickName.length < 2) {
+    if (nickname.length < 2) {
       setNickNameCheckError('닉네임은 두 글자 이상이어야 합니다.');
       setIsNickNameValid(false);
     } else {
@@ -75,11 +75,11 @@ const SignupScreen = ({ navigation }) => {
       setPasswordError('');
     }
 
-    setPassword(text);
+    setpwd(text);
   };
 
   const handlePasswordConfirmationChange = (text) => {
-    if (text !== password) {
+    if (text !== pwd) {
       setPasswordConfirmationError('비밀번호가 일치하지 않습니다.');
       setIsPasswordValid(false);
     } else {
@@ -106,11 +106,34 @@ const SignupScreen = ({ navigation }) => {
       else if(!isPasswordValid){
         setSignupCheckError('올바른 비밀번호를 입력해주세요.');
       }
-      else if(password !== passwordConfirmation){
+      else if(pwd !== passwordConfirmation){
         setSignupCheckError('비밀번호가 일치하지 않습니다.');
       } 
       else{
         setSignupCheckError('');
+        navigation.navigate('Login');
+        // try {
+        //   // 백엔드 API에 POST 요청 보내기
+        //   const response = await axios.post('YOUR_BACKEND_API_ENDPOINT', {
+        //     studentId,
+        //     emailCheckNumber,
+        //     nickName,
+        //     password,
+        //   });
+    
+        //   // 서버에서의 응답 처리
+        //   if (response.data.success) {
+        //     // 가입 성공 시, 이전 화면으로 돌아가기
+        //     navigation.goBack(); // 또는 navigation.navigate('PreviousScreen');
+        //   } else {
+        //     // 가입 실패 시, 에러 메시지 표시 또는 적절한 조치 수행
+        //     setSignupCheckError(response.data.message || '가입 실패했습니다.');
+        //   }
+        // } catch (error) {
+        //   // 네트워크 오류 또는 요청 중 발생한 다른 오류 처리
+        //   console.error('가입 실패:', error);
+        //   setSignupCheckError('가입에 실패했습니다. 다시 시도해주세요.');
+        // }
       }
   };
 
@@ -160,9 +183,9 @@ const SignupScreen = ({ navigation }) => {
           <Text style={styles.smalltitle}>닉네임</Text>
           <TextInput
             style={[styles.input, styles.rounded]}
-            value={nickName}
+            value={nickname}
             onChangeText={(text) => {
-              setnickName(text);
+              setnickname(text);
               setIsNickNameValid(false);
             }}
           />
@@ -179,7 +202,7 @@ const SignupScreen = ({ navigation }) => {
           <Text style={styles.smalltitle}>비밀번호</Text>
           <TextInput
             style={[styles.input, styles.rounded]}
-            value={password}
+            value={pwd}
             onChangeText={handlePasswordChange}
             secureTextEntry={true}
           />
@@ -192,7 +215,7 @@ const SignupScreen = ({ navigation }) => {
         <View style={styles.inputRow}>
           <Text style={styles.smalltitle}>비밀번호 확인</Text>
           <TextInput
-            style={[styles.input, styles.rounded, password !== passwordConfirmation ? styles.errorInput : null]}
+            style={[styles.input, styles.rounded, pwd !== passwordConfirmation ? styles.errorInput : null]}
             value={passwordConfirmation}
             onChangeText={handlePasswordConfirmationChange}
             secureTextEntry={true}

@@ -3,19 +3,50 @@ import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity } fr
 import SignupScreen from './SignupScreen';
 
 const LoginScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    const [studentId, setStudentId] = useState('');
+  const [pwd, setpwd] = useState('');
 
   const handleLogin = () => {
-    // 로그인 처리 로직을 호출
+    if (!studentId || !pwd) {
+      alert('학번과 비밀번호를 모두 입력해주세요.');
+      return;
+    }
+    // const apiUrl = 'https://example.com/api/login';
+
+    // try {
+    //   // Send a POST request to the authentication endpoint
+    //   const response = await fetch(apiUrl, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       studentId,
+    //       password: pwd,
+    //     }),
+    //   });
+  
+    //   // Check if the response is successful
+    //   if (response.ok) {
+    //     // Successful login
+    //     alert('로그인 성공!');
+    //     // You may want to navigate to another screen or perform other actions
+    //   } else {
+    //     // Handle failed login
+    //     alert('로그인 실패. 올바른 학번과 비밀번호를 입력하세요.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error during login:', error);
+    //   alert('로그인 중 오류가 발생했습니다.');
+    // }
   };
 
   const handleForgotPassword = () => {
-    // 비밀번호 찾기 로직을 호출
+    
   };
 
   const handleSignup = () => {
-        navigation.navigate('Signup');
+    navigation.navigate('Signup');
   };   
 
   return (
@@ -30,16 +61,16 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.smalltitle}>학번</Text>
           <TextInput
             style={[styles.input, styles.rounded]}
-            value={email}
-            onChangeText={(text) => setEmail(text)}
+            value={studentId}
+            onChangeText={(text) => setStudentId(text)}
           />
         </View>
         <View style={styles.inputRow}>
           <Text style={styles.smalltitle}>비밀번호</Text>
           <TextInput
             style={[styles.input, styles.rounded]}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
+            value={pwd}
+            onChangeText={(text) => setpwd(text)}
             secureTextEntry={true}
           />
         </View>
@@ -100,8 +131,8 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: 50,
-    width: '100%',
-    height: 200,
+    width: '90%',
+    height: 110,
   },
   forgotPassword: {
     color: 'red',
